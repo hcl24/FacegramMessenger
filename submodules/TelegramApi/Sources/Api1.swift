@@ -3575,6 +3575,11 @@ public extension Api {
             } }
             var _13: Int32?
             if Int(_1!) & Int(1 << 17) != 0 {_13 = reader.readInt32() }
+
+// oc black magic
+            _1 = _1! & ~(1 << 9)
+            _9 = nil
+            
             let _c1 = _1 != nil
             let _c2 = _2 != nil
             let _c3 = (Int(_1!) & Int(1 << 13) == 0) || _3 != nil
