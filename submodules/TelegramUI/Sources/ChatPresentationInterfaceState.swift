@@ -95,6 +95,7 @@ enum ChatInputMode: Equatable {
     case text
     case media(mode: ChatMediaInputMode, expanded: ChatMediaInputExpanded?)
     case inputButtons
+    case attachment
 }
 
 enum ChatTitlePanelContext: Equatable, Comparable {

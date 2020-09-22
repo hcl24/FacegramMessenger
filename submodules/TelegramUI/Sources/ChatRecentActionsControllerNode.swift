@@ -453,6 +453,12 @@ final class ChatRecentActionsControllerNode: ViewControllerTracingNode {
         }, openPeerContextMenu: { _, _, _, _ in
         }, requestMessageUpdate: { _ in
         }, cancelInteractiveKeyboardGestures: {
+        }, openPhotos: {
+        }, openCamera: {
+        }, openFiles: {
+        }, openLocation: {
+        }, openContacts: {
+        }, openVote: {
         }, automaticMediaDownloadSettings: self.automaticMediaDownloadSettings,
            pollActionState: ChatInterfacePollActionState(), stickerSettings: ChatInterfaceStickerSettings(loopAnimatedStickers: false))
         self.controllerInteraction = controllerInteraction

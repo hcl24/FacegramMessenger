@@ -2155,6 +2155,76 @@ public final class ChatControllerImpl: TelegramBaseController, ChatController, G
         }, cancelInteractiveKeyboardGestures: { [weak self] in
             (self?.view.window as? WindowHost)?.cancelInteractiveKeyboardGestures()
             self?.chatDisplayNode.cancelInteractiveKeyboardGestures()
+        }, openPhotos: { [weak self] in
+            if let strongSelf = self {
+                strongSelf.chatDisplayNode.updateAttachementKeyboard(value: false)
+                strongSelf.presentMediaPicker(fileMode: false, editingMedia: false, completion: { signals, silentPosting, scheduleTime in
+                    strongSelf.enqueueMediaMessages(signals: signals, silentPosting: silentPosting, scheduleTime: scheduleTime > 0 ? scheduleTime : nil)
+                })
+            }
+        }, openCamera: { [weak self] in
+            if let strongSelf = self, let peer = strongSelf.presentationInterfaceState.renderedPeer?.peer {
+                strongSelf.chatDisplayNode.updateAttachementKeyboard(value: false)
+                let cameraView = TGAttachmentCameraView.init(forSelfPortrait: false)
+                cameraView?.startPreview()
+                presentedLegacyCamera(context: strongSelf.context, peer: peer, cameraView: cameraView, menuController: nil, parentController: strongSelf, editingMedia: false, saveCapturedPhotos: false, mediaGrouping: true, initialCaption: "", hasSchedule: !strongSelf.presentationInterfaceState.isScheduledMessages && peer.id.namespace != Namespaces.Peer.SecretChat, sendMessagesWithSignals: { [weak self] signals, silentPosting, scheduleTime in
+                    if let strongSelf = self {
+                        strongSelf.enqueueMediaMessages(signals: signals, silentPosting: silentPosting)
+                    }
+                }, recognizedQRCode: { [weak self] code in
+                    if let strongSelf = self, let (host, port, username, password, secret) = parseProxyUrl(code) {
+                        strongSelf.openResolved(ResolvedUrl.proxy(host: host, port: port, username: username, password: password, secret: secret))
+                    }
+                }, presentSchedulePicker: { [weak self] done in
+                    if let strongSelf = self {
+                        strongSelf.presentScheduleTimePicker(style: .media, completion: { [weak self] time in
+                            if let strongSelf = self {
+                                done(time)
+                                if !strongSelf.presentationInterfaceState.isScheduledMessages && time != scheduleWhenOnlineTimestamp {
+                                    strongSelf.openScheduledMessages()
+                                }
+                            }
+                        })
+                    }
+                }, presentTimerPicker: { [weak self] done in
+                    if let strongSelf = self {
+                        strongSelf.presentTimerPicker(style: .media, completion: { time in
+                            done(time)
+                        })
+                    }
+                }, presentStickers: { [weak self] completion in
+                    if let strongSelf = self {
+                        let controller = DrawingStickersScreen(context: strongSelf.context, selectSticker: { fileReference, node, rect in
+                            completion(fileReference.media, fileReference.media.isAnimatedSticker, node.view, rect)
+                            return true
+                        })
+                        strongSelf.present(controller, in: .window(.root))
+                        return controller
+                    } else {
+                        return nil
+                    }
+                })
+            }
+        }, openFiles: { [weak self] in
+            if let strongSelf = self {
+                strongSelf.chatDisplayNode.updateAttachementKeyboard(value: false)
+                strongSelf.presentFileMediaPickerOptions(editingMessage: false)
+            }
+        }, openLocation: { [weak self] in
+            if let strongSelf = self {
+                strongSelf.chatDisplayNode.updateAttachementKeyboard(value: false)
+                strongSelf.presentLocationPicker()
+            }
+        }, openContacts: { [weak self] in
+            if let strongSelf = self {
+                strongSelf.chatDisplayNode.updateAttachementKeyboard(value: false)
+                strongSelf.presentContactPicker()
+            }
+        }, openVote: { [weak self] in
+            if let strongSelf = self {
+                strongSelf.chatDisplayNode.updateAttachementKeyboard(value: false)
+                strongSelf.presentPollCreation()
+            }
         }, automaticMediaDownloadSettings: self.automaticMediaDownloadSettings, pollActionState: ChatInterfacePollActionState(), stickerSettings: self.stickerSettings)
         
         self.controllerInteraction = controllerInteraction

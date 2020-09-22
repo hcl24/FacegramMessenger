@@ -241,6 +241,24 @@ func inputTextPanelStateForChatPresentationInterfaceState(_ chatPresentationInte
             return ChatTextInputPanelState(accessoryItems: accessoryItems, contextPlaceholder: contextPlaceholder, mediaRecordingState: chatPresentationInterfaceState.inputTextPanelState.mediaRecordingState)
         case .inputButtons:
             return ChatTextInputPanelState(accessoryItems: [.keyboard], contextPlaceholder: contextPlaceholder, mediaRecordingState: chatPresentationInterfaceState.inputTextPanelState.mediaRecordingState)
+// oc keyboard
+        case .attachment:
+            var stickersEnabled = true
+            if let peer = chatPresentationInterfaceState.renderedPeer?.peer as? TelegramChannel {
+                if case .broadcast = peer.info, canSendMessagesToPeer(peer) {
+                    accessoryItems.append(.silentPost(chatPresentationInterfaceState.interfaceState.silentPosting))
+                }
+                if peer.hasBannedPermission(.banSendStickers) != nil {
+                    stickersEnabled = false
+                }
+            } else if let peer = chatPresentationInterfaceState.renderedPeer?.peer as? TelegramGroup {
+                if peer.hasBannedPermission(.banSendStickers) {
+                    stickersEnabled = false
+                }
+            }
+            accessoryItems.append(.stickers(stickersEnabled))
+            
+            return ChatTextInputPanelState(accessoryItems: accessoryItems, contextPlaceholder: contextPlaceholder, mediaRecordingState: chatPresentationInterfaceState.inputTextPanelState.mediaRecordingState)
         case .none, .text:
             if let _ = chatPresentationInterfaceState.interfaceState.editMessage {
                 return ChatTextInputPanelState(accessoryItems: [], contextPlaceholder: contextPlaceholder, mediaRecordingState: chatPresentationInterfaceState.inputTextPanelState.mediaRecordingState)

@@ -47,6 +47,14 @@ func inputNodeForChatPresentationIntefaceState(_ chatPresentationInterfaceState:
                 inputNode.interfaceInteraction = interfaceInteraction
                 return inputNode
             }
+        case .attachment:
+            if let currentNode = currentNode as? ChatAttachmentKeyboardInputNode {
+                return currentNode
+            } else {
+                let inputNode = ChatAttachmentKeyboardInputNode(context: context, controllerInteraction: controllerInteraction, chatLocation: chatPresentationInterfaceState.chatLocation)
+                inputNode.interfaceInteraction = interfaceInteraction
+                return inputNode
+            }
         case .none, .text:
             return nil
     }

@@ -339,6 +339,8 @@ class ChatControllerNode: ASDisplayNode, UIScrollViewDelegate {
     private var inputNode: ChatInputNode?
     private var disappearingNode: ChatInputNode?
     
+        private var isAttachementKeyboard = false
+    
     private var textInputPanelNode: ChatTextInputPanelNode?
     private var inputMediaNode: ChatMediaInputNode?
     
@@ -429,6 +431,7 @@ class ChatControllerNode: ASDisplayNode, UIScrollViewDelegate {
     private var lastSendTimestamp = 0.0
     
     private var openStickersDisposable: Disposable?
+    private var openAttachmentDisposable: Disposable?
     private var displayVideoUnmuteTipDisposable: Disposable?
     
     private var onLayoutCompletions: [(ContainedViewLayoutTransition) -> Void] = []
@@ -607,17 +610,32 @@ class ChatControllerNode: ASDisplayNode, UIScrollViewDelegate {
             self?.paste(data)
         }
         self.textInputPanelNode?.displayAttachmentMenu = { [weak self] in
-            self?.displayAttachmentMenu()
+// oc keyboard
+            //self?.displayAttachmentMenu()
+            if let strongSelf = self {
+                if strongSelf.isAttachementKeyboard && strongSelf.openAttachmentDisposable != nil {
+                    strongSelf.dismissInput()
+                    strongSelf.isAttachementKeyboard = false
+                } else {
+                    strongSelf.openAttachment()
+                    strongSelf.isAttachementKeyboard = true
+                }
+            }
         }
         self.textInputPanelNode?.updateActivity = { [weak self] in
             self?.updateTypingActivity(true)
         }
     }
     
+    func updateAttachementKeyboard(value: Bool) {
+        self.isAttachementKeyboard = value
+    }
+    
     deinit {
         self.backgroundImageDisposable.dispose()
         self.interactiveEmojisDisposable?.dispose()
         self.openStickersDisposable?.dispose()
+        self.openAttachmentDisposable?.dispose()
         self.displayVideoUnmuteTipDisposable?.dispose()
     }
     
@@ -1986,6 +2004,14 @@ class ChatControllerNode: ASDisplayNode, UIScrollViewDelegate {
                 }
             }
             
+            if let openAttachmentDisposable = self.openAttachmentDisposable {
+                if case .attachment = chatPresentationInterfaceState.inputMode {
+                } else {
+                    openAttachmentDisposable.dispose()
+                    self.openAttachmentDisposable = nil
+                }
+            }
+            
             let layoutTransition: ContainedViewLayoutTransition = transition
             
             let transitionIsAnimated: Bool
@@ -2095,6 +2121,8 @@ class ChatControllerNode: ASDisplayNode, UIScrollViewDelegate {
     @objc func tapGesture(_ recognizer: UITapGestureRecognizer) {
         if recognizer.state == .ended {
             self.dismissInput()
+            
+            isAttachementKeyboard = false
         }
     }
     
@@ -2656,6 +2684,19 @@ class ChatControllerNode: ASDisplayNode, UIScrollViewDelegate {
                 self?.openStickersDisposable = nil
                 self?.interfaceInteraction?.updateInputModeAndDismissedButtonKeyboardMessageId({ state in
                     return (.media(mode: .other, expanded: nil), state.interfaceState.messageActionsState.closedButtonKeyboardMessageId)
+                })
+            })
+        }
+    }
+    
+    func openAttachment() {
+        if let inputMediaNode = self.inputMediaNode, self.openAttachmentDisposable == nil {
+            self.openAttachmentDisposable = (inputMediaNode.ready
+            |> take(1)
+            |> deliverOnMainQueue).start(next: { [weak self] in
+                self?.openAttachmentDisposable = nil
+                self?.interfaceInteraction?.updateInputModeAndDismissedButtonKeyboardMessageId({ state in
+                    return (.attachment, state.interfaceState.messageActionsState.closedButtonKeyboardMessageId)
                 })
             })
         }

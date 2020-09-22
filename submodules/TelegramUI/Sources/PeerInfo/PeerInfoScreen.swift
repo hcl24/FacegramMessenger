@@ -1955,6 +1955,12 @@ private final class PeerInfoScreenNode: ViewControllerTracingNode, UIScrollViewD
         }, openPeerContextMenu: { _, _, _, _ in
         }, requestMessageUpdate: { _ in
         }, cancelInteractiveKeyboardGestures: {
+        }, openPhotos: {
+        }, openCamera: {
+        }, openFiles: {
+        }, openLocation: {
+        }, openContacts: {
+        }, openVote: {
         }, automaticMediaDownloadSettings: MediaAutoDownloadSettings.defaultSettings,
            pollActionState: ChatInterfacePollActionState(), stickerSettings: ChatInterfaceStickerSettings(loopAnimatedStickers: false))
         self.hiddenMediaDisposable = context.sharedContext.mediaManager.galleryHiddenMediaManager.hiddenIds().start(next: { [weak self] ids in

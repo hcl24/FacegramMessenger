@@ -1196,6 +1196,12 @@ public final class SharedAccountContextImpl: SharedAccountContext {
             }, openPeerContextMenu: { _, _, _, _ in
             }, requestMessageUpdate: { _ in
             }, cancelInteractiveKeyboardGestures: {
+            }, openPhotos: {
+            }, openCamera: {
+            }, openFiles: {
+            }, openLocation: {
+            }, openContacts: {
+            }, openVote: {
             }, automaticMediaDownloadSettings: MediaAutoDownloadSettings.defaultSettings,
                pollActionState: ChatInterfacePollActionState(), stickerSettings: ChatInterfaceStickerSettings(loopAnimatedStickers: false))
         } else {
