@@ -1,0 +1,13 @@
+load("//Config:buck_rule_macros.bzl", "framework")
+
+framework(
+    name = "TelegramApi",
+    srcs = glob([
+        "Sources/**/*.swift",
+    ]),
+    deps = [
+    ],
+    frameworks = [
+        "$SDKROOT/System/Library/Frameworks/Foundation.framework",
+    ],
+)
