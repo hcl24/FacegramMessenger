@@ -83,9 +83,9 @@ final class ContactsControllerNode: ASDisplayNode {
         
         var addNearbyImpl: (() -> Void)?
         var inviteImpl: (() -> Void)?
-        let options = [ContactListAdditionalOption(title: presentationData.strings.Contacts_AddPeopleNearby, icon: .generic(UIImage(bundleImageName: "Contact List/PeopleNearbyIcon")!), action: {
+        let options = [/*ContactListAdditionalOption(title: presentationData.strings.Contacts_AddPeopleNearby, icon: .generic(UIImage(bundleImageName: "Contact List/PeopleNearbyIcon")!), action: {
             addNearbyImpl?()
-        }), ContactListAdditionalOption(title: presentationData.strings.Contacts_InviteFriends, icon: .generic(UIImage(bundleImageName: "Contact List/AddMemberIcon")!), action: {
+        }), */ContactListAdditionalOption(title: presentationData.strings.Contacts_InviteFriends, icon: .generic(UIImage(bundleImageName: "Contact List/AddMemberIcon")!), action: {
             inviteImpl?()
         })]
         
@@ -101,7 +101,7 @@ final class ContactsControllerNode: ASDisplayNode {
         
         var contextAction: ((Peer, ASDisplayNode, ContextGesture?) -> Void)?
         
-        self.contactListNode = ContactListNode(context: context, presentation: presentation, displaySortOptions: true, contextAction: { peer, node, gesture in
+        self.contactListNode = ContactListNode(context: context, presentation: presentation, displaySortOptions: false, contextAction: { peer, node, gesture in
             contextAction?(peer, node, gesture)
         })
         

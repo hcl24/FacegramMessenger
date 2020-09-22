@@ -124,7 +124,7 @@ public func itemListNeighborsGroupedInsets(_ neighbors: ItemListNeighbors) -> UI
     let topInset: CGFloat
     switch neighbors.top {
     case .none:
-        topInset = UIScreenPixel + 35.0
+        topInset = UIScreenPixel + 10.0
     case .sameSection:
         topInset = 0.0
     case let .otherSection(otherInset):
@@ -132,7 +132,7 @@ public func itemListNeighborsGroupedInsets(_ neighbors: ItemListNeighbors) -> UI
         case .none:
             topInset = 0.0
         case .full:
-            topInset = UIScreenPixel + 35.0
+            topInset = UIScreenPixel + 10.0
         case .reduced:
             topInset = UIScreenPixel + 16.0
         }
@@ -142,7 +142,7 @@ public func itemListNeighborsGroupedInsets(_ neighbors: ItemListNeighbors) -> UI
     case .sameSection, .otherSection:
         bottomInset = 0.0
     case .none:
-        bottomInset = UIScreenPixel + 35.0
+        bottomInset = UIScreenPixel + 10.0
     }
     return UIEdgeInsets(top: topInset, left: 0.0, bottom: bottomInset, right: 0.0)
 }
