@@ -64,3 +64,10 @@ public struct PresentationResourcesSettings {
     
     public static let websites = renderIcon(name: "Settings/MenuIcons/Websites")
 }
+
+
+public struct PresentationResourcesDiscover {
+    public static let devices = UIImage(bundleImageName: "Settings/MenuIcons/Sessions")?.precomposed()
+    public static let peopleNearby = UIImage(bundleImageName: "Chat/Info/GroupMembersIcon")?.precomposed()
+    public static let tools = UIImage(bundleImageName: "Chat/Info/GroupAdminsIcon")?.precomposed()
+}

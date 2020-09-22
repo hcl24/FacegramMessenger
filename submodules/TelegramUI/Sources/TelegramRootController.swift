@@ -13,6 +13,7 @@ import CallListUI
 import ChatListUI
 import SettingsUI
 import AppBundle
+import Facegram
 
 public final class TelegramRootController: NavigationController {
     private let context: AccountContext
@@ -22,6 +23,7 @@ public final class TelegramRootController: NavigationController {
     public var contactsController: ContactsController?
     public var callListController: CallListController?
     public var chatListController: ChatListController?
+    public var accountDiscoverController: ViewController?
     public var accountSettingsController: PeerInfoScreen?
     
     private var permissionsDisposable: Disposable?
@@ -101,6 +103,10 @@ public final class TelegramRootController: NavigationController {
         }
         controllers.append(chatListController)
         
+// oc add discovervc
+        let accountDiscoverController = discoverController(context: self.context)
+        controllers.append(accountDiscoverController)
+        
         var restoreSettignsController: (ViewController & SettingsController)?
         if let sharedContext = self.context.sharedContext as? SharedAccountContextImpl {
             restoreSettignsController = sharedContext.switchingData.settingsController
@@ -119,7 +125,7 @@ public final class TelegramRootController: NavigationController {
         }
         controllers.append(accountSettingsController)
         
-        tabBarController.setControllers(controllers, selectedIndex: restoreSettignsController != nil ? (controllers.count - 1) : (controllers.count - 2))
+        tabBarController.setControllers(controllers, selectedIndex: restoreSettignsController != nil ? (controllers.count - 2) : (controllers.count - 3))
         
         self.contactsController = contactsController
         self.callListController = callListController
@@ -139,6 +145,7 @@ public final class TelegramRootController: NavigationController {
             controllers.append(self.callListController!)
         }
         controllers.append(self.chatListController!)
+        controllers.append(self.accountDiscoverController!)
         controllers.append(self.accountSettingsController!)
         
         rootTabController.setControllers(controllers, selectedIndex: nil)
